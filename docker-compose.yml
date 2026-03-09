@@ -23,7 +23,50 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
+      - auth-service
+      - employee-service
+
+  auth-service:
+    build: ../EXBanka-3-Backend/auth-service
+    container_name: auth_service
+    ports:
+      - "8081:8080"
+    depends_on:
       - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bank
+      DB_PASSWORD: bank123
+      DB_NAME: bankdb
+
+  employee-service:
+    build: ../EXBanka-3-Backend/employee-service
+    container_name: employee_service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bank
+      DB_PASSWORD: bank123
+      DB_NAME: bankdb
+
+  notification-service:
+    build: ../EXBanka-3-Backend/notification-service
+    container_name: notification_service
+    ports:
+      - "8083:8080"
+
+  frontend:
+    build: ../EXBanka-3-Frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nginx
 
 volumes:
   postgres_data:
