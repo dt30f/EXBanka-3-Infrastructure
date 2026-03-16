@@ -79,6 +79,71 @@ func SeedSifreDelatnosti(db *gorm.DB) error {
 	return nil
 }
 
+// DefaultBanka is the bank's own Firma record seeded at startup.
+var DefaultBanka = models.Firma{
+	Naziv:       "EXBanka",
+	MaticniBroj: "11111111",
+	PIB:         "111111111",
+	Adresa:      "Bulevar Kralja Aleksandra 73, Beograd",
+	Telefon:     "+381111234567",
+}
+
+// BankaAccountBrojevi maps currency codes to fixed 18-digit bank account numbers.
+// Bank-owned accounts use the prefix 000 (bank code) with sequential identifiers.
+var BankaAccountBrojevi = map[string]string{
+	"RSD": "000000000000000101",
+	"EUR": "000000000000000201",
+	"USD": "000000000000000301",
+	"CHF": "000000000000000401",
+	"GBP": "000000000000000501",
+	"JPY": "000000000000000601",
+	"CAD": "000000000000000701",
+	"AUD": "000000000000000801",
+}
+
+// SeedBanka creates the bank Firma and one account per currency if they don't exist.
+// Must be called after SeedCurrencies.
+func SeedBanka(db *gorm.DB) error {
+	banka := DefaultBanka
+	result := db.Where(models.Firma{MaticniBroj: banka.MaticniBroj}).Assign(models.Firma{
+		Naziv:   banka.Naziv,
+		PIB:     banka.PIB,
+		Adresa:  banka.Adresa,
+		Telefon: banka.Telefon,
+	}).FirstOrCreate(&banka)
+	if result.Error != nil {
+		return fmt.Errorf("failed to seed bank firma: %w", result.Error)
+	}
+
+	for _, currency := range DefaultCurrencies {
+		var cur models.Currency
+		if err := db.Where("kod = ?", currency.Kod).First(&cur).Error; err != nil {
+			return fmt.Errorf("currency %q not found (run SeedCurrencies first): %w", currency.Kod, err)
+		}
+
+		brojRacuna, ok := BankaAccountBrojevi[currency.Kod]
+		if !ok {
+			return fmt.Errorf("no account number defined for currency %q", currency.Kod)
+		}
+
+		account := models.Account{
+			BrojRacuna: brojRacuna,
+			FirmaID:    &banka.ID,
+			CurrencyID: cur.ID,
+			Tip:        "tekuci",
+			Vrsta:      "poslovni",
+			Naziv:      "EXBanka " + currency.Kod + " račun",
+			Status:     "aktivan",
+		}
+		if err := db.Where(models.Account{BrojRacuna: brojRacuna}).Assign(account).FirstOrCreate(&account).Error; err != nil {
+			return fmt.Errorf("failed to seed bank account for %q: %w", currency.Kod, err)
+		}
+	}
+
+	slog.Info("Bank seeded", "firma", banka.Naziv, "accounts", len(DefaultCurrencies))
+	return nil
+}
+
 // SeedSifrePlacanja inserts default payment purpose codes if they don't already exist.
 func SeedSifrePlacanja(db *gorm.DB) error {
 	for _, s := range DefaultSifrePlacanja {
