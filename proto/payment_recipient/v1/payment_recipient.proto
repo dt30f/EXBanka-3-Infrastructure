@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package payment_recipient.v1;
+
+option go_package = "github.com/RAF-SI-2025/EXBanka-3-Infrastructure/gen/proto/payment_recipient/v1;payment_recipientv1";
+
+import "google/api/annotations.proto";
+
+service PaymentRecipientService {
+  rpc CreateRecipient(CreateRecipientRequest) returns (RecipientResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/recipients"
+      body: "*"
+    };
+  }
+
+  rpc ListRecipients(ListRecipientsRequest) returns (ListRecipientsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/recipients"
+    };
+  }
+
+  rpc UpdateRecipient(UpdateRecipientRequest) returns (RecipientResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/recipients/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteRecipient(DeleteRecipientRequest) returns (DeleteRecipientResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/recipients/{id}"
+    };
+  }
+}
+
+message RecipientProto {
+  uint64 id          = 1;
+  uint64 client_id   = 2;
+  string naziv       = 3;
+  string broj_racuna = 4;
+}
+
+message CreateRecipientRequest {
+  uint64 client_id   = 1;
+  string naziv       = 2;
+  string broj_racuna = 3;
+}
+
+message RecipientResponse {
+  RecipientProto recipient = 1;
+  string message           = 2;
+}
+
+message ListRecipientsRequest {
+  uint64 client_id = 1;
+}
+
+message ListRecipientsResponse {
+  repeated RecipientProto recipients = 1;
+  int64 total                        = 2;
+}
+
+message UpdateRecipientRequest {
+  uint64 id          = 1;
+  uint64 client_id   = 2;
+  string naziv       = 3;
+  string broj_racuna = 4;
+}
+
+message DeleteRecipientRequest {
+  uint64 id        = 1;
+  uint64 client_id = 2;
+}
+
+message DeleteRecipientResponse {
+  string message = 1;
+}
