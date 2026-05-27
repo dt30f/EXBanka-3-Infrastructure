@@ -44,7 +44,7 @@ Create the app secret manually from secure values:
 ```powershell
 kubectl create secret generic exbanka-app-secrets `
   --namespace exbanka `
-  --from-literal=DB_USER=postgres `
+  --from-literal=DB_USER=exbanka_app `
   --from-literal=DB_PASSWORD='<replace-me>' `
   --from-literal=JWT_SECRET='<replace-me>' `
   --from-literal=ALPHA_VANTAGE_KEY='<replace-me>' `
@@ -52,6 +52,9 @@ kubectl create secret generic exbanka-app-secrets `
 ```
 
 `app-secret.example.yaml` exists only as a shape reference.
+
+The `DB_USER` and `DB_PASSWORD` values must match the Postgres credentials created
+for CloudNativePG in the `exbanka-db` namespace.
 
 ## Validate locally
 

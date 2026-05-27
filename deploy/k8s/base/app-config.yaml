@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: exbanka
 data:
-  DB_HOST: bankdb-rw.exbanka-db.svc.cluster.local
+  DB_HOST: exbanka-postgres-rw.exbanka-db.svc.cluster.local
   DB_PORT: "5432"
   DB_NAME: bankdb
   DB_SSL_MODE: disable
