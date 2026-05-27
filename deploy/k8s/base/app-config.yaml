@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: exbanka-app-config
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/part-of: exbanka
+data:
+  DB_HOST: bankdb-rw.exbanka-db.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: bankdb
+  DB_SSL_MODE: disable
+  JWT_ACCESS_DURATION_MINUTES: "15"
+  JWT_REFRESH_DURATION_HOURS: "24"
+  SMTP_HOST: mailhog
+  SMTP_PORT: "1025"
+  SMTP_FROM: noreply@bank.com
+  FRONTEND_URL: http://exbanka.local

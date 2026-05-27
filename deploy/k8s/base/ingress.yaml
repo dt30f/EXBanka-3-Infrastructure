@@ -1,0 +1,212 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: exbanka
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: exbanka
+    app.kubernetes.io/part-of: exbanka
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: exbanka.local
+      http:
+        paths:
+          - path: /api/v1/auth/
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  name: http
+          - path: /api/v1/permissions
+            pathType: Exact
+            backend:
+              service:
+                name: employee-service
+                port:
+                  name: http
+          - path: /api/v1/employees
+            pathType: Prefix
+            backend:
+              service:
+                name: employee-service
+                port:
+                  name: http
+          - path: /api/v1/actuaries
+            pathType: Prefix
+            backend:
+              service:
+                name: employee-service
+                port:
+                  name: http
+          - path: /api/v1/clients
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  name: http
+          - path: /api/v1/firme
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/sifre-delatnosti
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/currencies
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/accounts/create
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/accounts
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/cards
+            pathType: Prefix
+            backend:
+              service:
+                name: account-service
+                port:
+                  name: http
+          - path: /api/v1/transfers
+            pathType: Prefix
+            backend:
+              service:
+                name: transfer-service
+                port:
+                  name: http
+          - path: /api/v1/payments
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  name: http
+          - path: /api/v1/prenos
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  name: http
+          - path: /api/v1/recipients
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  name: http
+          - path: /api/v1/exchanges
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/listings
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/portfolio
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/exchange
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/tax
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/otc
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/interbank-otc
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/funds
+            pathType: Prefix
+            backend:
+              service:
+                name: exchange-service
+                port:
+                  name: http
+          - path: /api/v1/loans
+            pathType: Prefix
+            backend:
+              service:
+                name: loan-service
+                port:
+                  name: http
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  name: http
+          - path: /swagger
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  name: http

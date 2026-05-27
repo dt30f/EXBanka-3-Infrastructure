@@ -1,0 +1,563 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backend
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/dt30f/exbanka-3-backend/backend:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: grpc
+              containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8080"
+            - name: GRPC_PORT
+              value: "9090"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: auth-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: auth-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: auth-service
+          image: ghcr.io/dt30f/exbanka-3-backend/auth-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8081
+            - name: grpc
+              containerPort: 9091
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8081"
+            - name: GRPC_PORT
+              value: "9091"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: employee-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: employee-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: employee-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: employee-service
+          image: ghcr.io/dt30f/exbanka-3-backend/employee-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8082
+            - name: grpc
+              containerPort: 9092
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8082"
+            - name: GRPC_PORT
+              value: "9092"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: client-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: client-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: client-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: client-service
+          image: ghcr.io/dt30f/exbanka-3-backend/client-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8083
+            - name: grpc
+              containerPort: 9093
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8083"
+            - name: GRPC_PORT
+              value: "9093"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: account-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: account-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: account-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: account-service
+          image: ghcr.io/dt30f/exbanka-3-backend/account-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8084
+            - name: grpc
+              containerPort: 9094
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8084"
+            - name: GRPC_PORT
+              value: "9094"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transfer-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: transfer-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: transfer-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: transfer-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: transfer-service
+          image: ghcr.io/dt30f/exbanka-3-backend/transfer-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8086
+            - name: grpc
+              containerPort: 9096
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8086"
+            - name: GRPC_PORT
+              value: "9096"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: payment-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: payment-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: payment-service
+          image: ghcr.io/dt30f/exbanka-3-backend/payment-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8087
+            - name: grpc
+              containerPort: 9097
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8087"
+            - name: GRPC_PORT
+              value: "9097"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exchange-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: exchange-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: exchange-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: exchange-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: exchange-service
+          image: ghcr.io/dt30f/exbanka-3-backend/exchange-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8088
+            - name: grpc
+              containerPort: 9098
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8088"
+            - name: GRPC_PORT
+              value: "9098"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: loan-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loan-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loan-service
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: loan-service
+          image: ghcr.io/dt30f/exbanka-3-backend/loan-service:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8089
+          envFrom:
+            - configMapRef:
+                name: exbanka-app-config
+            - secretRef:
+                name: exbanka-app-secrets
+          env:
+            - name: HTTP_PORT
+              value: "8089"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: exbanka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/part-of: exbanka
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/dt30f/exbanka-3-frontend/frontend:replace-with-git-sha
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

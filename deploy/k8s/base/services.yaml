@@ -1,0 +1,193 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+    - name: grpc
+      port: 9090
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: auth-service
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http
+    - name: grpc
+      port: 9091
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: employee-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: employee-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: employee-service
+  ports:
+    - name: http
+      port: 8082
+      targetPort: http
+    - name: grpc
+      port: 9092
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: client-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: client-service
+  ports:
+    - name: http
+      port: 8083
+      targetPort: http
+    - name: grpc
+      port: 9093
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: account-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: account-service
+  ports:
+    - name: http
+      port: 8084
+      targetPort: http
+    - name: grpc
+      port: 9094
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transfer-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: transfer-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: transfer-service
+  ports:
+    - name: http
+      port: 8086
+      targetPort: http
+    - name: grpc
+      port: 9096
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: payment-service
+  ports:
+    - name: http
+      port: 8087
+      targetPort: http
+    - name: grpc
+      port: 9097
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exchange-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: exchange-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: exchange-service
+  ports:
+    - name: http
+      port: 8088
+      targetPort: http
+    - name: grpc
+      port: 9098
+      targetPort: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loan-service
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: loan-service
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: loan-service
+  ports:
+    - name: http
+      port: 8089
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: exbanka
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: exbanka
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
