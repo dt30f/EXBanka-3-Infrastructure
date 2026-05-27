@@ -1,0 +1,32 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: exbanka-postgres
+  namespace: exbanka-db
+  labels:
+    app.kubernetes.io/name: exbanka-postgres
+    app.kubernetes.io/part-of: exbanka
+spec:
+  instances: 2
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:15
+
+  bootstrap:
+    initdb:
+      database: bankdb
+      owner: exbanka_app
+      secret:
+        name: bankdb-credentials
+
+  storage:
+    size: 20Gi
+
+  postgresql:
+    parameters:
+      synchronous_commit: "on"
+
+  minSyncReplicas: 1
+  maxSyncReplicas: 1
+
+  monitoring:
+    enablePodMonitor: false
