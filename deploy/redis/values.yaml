@@ -1,0 +1,46 @@
+architecture: replication
+
+commonConfiguration: |-
+  appendonly yes
+  appendfsync everysec
+  save ""
+
+auth:
+  enabled: true
+  existingSecret: redis-credentials
+  existingSecretPasswordKey: redis-password
+
+master:
+  count: 1
+  persistence:
+    enabled: true
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+replica:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 2Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+commonLabels:
+  app.kubernetes.io/part-of: exbanka
+
+metrics:
+  enabled: false
+
+networkPolicy:
+  enabled: false

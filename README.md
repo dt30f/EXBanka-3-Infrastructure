@@ -10,4 +10,8 @@ The CloudNativePG PostgreSQL foundation is in:
 
 - [deploy/postgres](deploy/postgres)
 
+The Redis deployment foundation is in:
+
+- [deploy/redis](deploy/redis)
+
 Start there for the current K8s rollout baseline.

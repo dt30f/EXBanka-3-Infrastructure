@@ -56,6 +56,9 @@ kubectl create secret generic exbanka-app-secrets `
 The `DB_USER` and `DB_PASSWORD` values must match the Postgres credentials created
 for CloudNativePG in the `exbanka-db` namespace.
 
+`REDIS_PASSWORD` must match the Redis credentials created from
+`deploy/redis/redis-secret.example.yaml`.
+
 ## Validate locally
 
 Render the base:

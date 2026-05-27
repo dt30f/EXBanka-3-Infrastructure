@@ -16,3 +16,5 @@ data:
   SMTP_PORT: "1025"
   SMTP_FROM: noreply@bank.com
   FRONTEND_URL: http://exbanka.local
+  REDIS_ADDR: exbanka-redis-master.exbanka.svc.cluster.local:6379
+  REDIS_DB: "0"
