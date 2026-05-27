@@ -38,7 +38,7 @@ spec:
               value: "9090"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -96,7 +96,7 @@ spec:
               value: "9091"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -154,7 +154,7 @@ spec:
               value: "9092"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -212,7 +212,7 @@ spec:
               value: "9093"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -270,7 +270,7 @@ spec:
               value: "9094"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -328,7 +328,7 @@ spec:
               value: "9096"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -386,7 +386,7 @@ spec:
               value: "9097"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -444,7 +444,7 @@ spec:
               value: "9098"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -498,7 +498,7 @@ spec:
               value: "8089"
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5

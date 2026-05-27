@@ -73,6 +73,15 @@ Dry-run the rendered manifests:
 kubectl apply --dry-run=client -k .\deploy\k8s\base
 ```
 
+## Health probes
+
+Go services use separate probe endpoints:
+
+- readiness probes call `/ready`, which checks PostgreSQL connectivity before a pod receives traffic.
+- liveness probes call `/health`, which stays lightweight and does not depend on PostgreSQL or Redis.
+
+The frontend keeps `/` for both probes because it only serves static assets/nginx routing.
+
 ## Apply order
 
 For the full project rollout, use this order:
@@ -95,7 +104,7 @@ Both services own scheduled jobs today. Scaling them before leader election can 
 
 ## Current limitations
 
-- The base points `DB_HOST` to the future CloudNativePG read/write endpoint `bankdb-rw.exbanka-db.svc.cluster.local`.
+- The base points `DB_HOST` to the CloudNativePG read/write endpoint `exbanka-postgres-rw.exbanka-db.svc.cluster.local`.
 - Application pods are not expected to become fully ready until the Postgres PR is applied.
-- Redis values are reserved in the Secret example, but Redis is not deployed in this PR.
+- Redis values are reserved in the Secret example and consumed by Redis-aware services, but Redis is not a hard readiness dependency.
 - This skeleton uses raw Kubernetes plus Kustomize because it is easy to validate with the currently available local tooling.
