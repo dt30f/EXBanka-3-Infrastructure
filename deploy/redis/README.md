@@ -8,7 +8,7 @@ durable interbank state remain in PostgreSQL.
 
 ## Scope
 
-This PR adds Redis infrastructure only:
+This folder provides the Redis deployment foundation:
 
 - Bitnami Redis Helm values
 - Redis authentication via a Kubernetes Secret
@@ -16,8 +16,12 @@ This PR adds Redis infrastructure only:
 - application ConfigMap placeholders for `REDIS_ADDR` and `REDIS_DB`
 - rollout and verification documentation
 
-It does not add backend Redis clients, token revocation, FX cache replacement, rate
-limiting, or cron leadership.
+Current backend usage:
+
+- auth token revocation for employee and client logout
+
+It does not make Redis a system of record and it does not yet add FX cache
+replacement, rate limiting, or cron leadership.
 
 ## Prerequisites
 
@@ -115,6 +119,37 @@ Expected output:
 PONG
 ```
 
+## Auth revocation smoke
+
+After application pods are rolled out with `REDIS_ADDR`, `REDIS_DB`, and
+`REDIS_PASSWORD`, verify that logout writes revocation entries and blocks token
+reuse:
+
+1. Login through `/api/v1/auth/login`.
+2. Call a protected endpoint with the returned access token and expect success.
+3. Call `/api/v1/auth/logout` with the access token and refresh token.
+4. Reuse the old access token and expect `401`.
+5. Reuse the old refresh token on `/api/v1/auth/refresh` and expect `401`.
+
+Optional Redis key check:
+
+```powershell
+$redisPassword = kubectl get secret redis-credentials `
+  -n exbanka `
+  -o jsonpath="{.data.redis-password}"
+$redisPassword = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($redisPassword))
+
+kubectl run redis-client `
+  --namespace exbanka `
+  --rm `
+  --tty `
+  -i `
+  --restart='Never' `
+  --image docker.io/bitnami/redis:7.4 `
+  --env REDISCLI_AUTH=$redisPassword `
+  -- redis-cli -h exbanka-redis-master keys "auth:revoked:jti:*"
+```
+
 ## Failure model
 
 Consumers must treat Redis as cache/coordination only:
@@ -129,7 +164,6 @@ Consumers must treat Redis as cache/coordination only:
 
 Next PRs should add backend integration gradually:
 
-1. `auth-service`: Redis-backed token revocation list.
-2. `exchange-service`: shared FX-rate cache.
-3. `exchange-service`: distributed AlphaVantage rate limiter.
-4. Cron leadership only after the team chooses Redis lock vs Kubernetes Lease.
+1. `exchange-service`: shared FX-rate cache.
+2. `exchange-service`: distributed AlphaVantage rate limiter.
+3. Cron leadership only after the team chooses Redis lock vs Kubernetes Lease.

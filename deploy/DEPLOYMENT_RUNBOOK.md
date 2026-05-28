@@ -343,9 +343,70 @@ Run these after pods are ready:
 - Exchange service `/ready` returns ready.
 - Loan service `/ready` returns ready.
 - Redis ping returns `PONG`.
+- Employee/admin logout revokes the current access token and refresh token.
 - PostgreSQL cluster has one primary and one standby.
 - No pod is in `CrashLoopBackOff`.
 - No app pod is stuck in `0/1 Ready`.
+
+### Auth token revocation smoke
+
+Run this after Redis and application pods are ready. Use a seeded employee/admin
+account for the target environment.
+
+```powershell
+$baseUrl = "http://exbanka.local"
+
+$login = Invoke-RestMethod `
+  -Method Post `
+  -Uri "$baseUrl/api/v1/auth/login" `
+  -ContentType "application/json" `
+  -Body (@{
+    email = "<admin-email>"
+    password = "<admin-password>"
+  } | ConvertTo-Json)
+
+$headers = @{ Authorization = "Bearer $($login.accessToken)" }
+
+Invoke-RestMethod `
+  -Method Get `
+  -Uri "$baseUrl/api/v1/employees" `
+  -Headers $headers
+
+Invoke-RestMethod `
+  -Method Post `
+  -Uri "$baseUrl/api/v1/auth/logout" `
+  -Headers $headers `
+  -ContentType "application/json" `
+  -Body (@{ refreshToken = $login.refreshToken } | ConvertTo-Json)
+
+try {
+  Invoke-WebRequest `
+    -Method Get `
+    -Uri "$baseUrl/api/v1/employees" `
+    -Headers $headers `
+    -UseBasicParsing
+} catch {
+  $_.Exception.Response.StatusCode.value__
+}
+
+try {
+  Invoke-WebRequest `
+    -Method Post `
+    -Uri "$baseUrl/api/v1/auth/refresh" `
+    -ContentType "application/json" `
+    -Body (@{ refreshToken = $login.refreshToken } | ConvertTo-Json) `
+    -UseBasicParsing
+} catch {
+  $_.Exception.Response.StatusCode.value__
+}
+```
+
+Expected result:
+
+- protected employee endpoint works before logout
+- logout returns `200`
+- reused access token returns `401`
+- reused refresh token returns `401`
 
 Useful commands:
 
@@ -429,7 +490,8 @@ Keep these limitations explicit:
 
 - `exchange-service` stays at one replica until cron leadership is implemented.
 - `loan-service` stays at one replica until cron leadership is implemented.
-- Redis-backed auth token revocation is not fully implemented yet.
+- Redis-backed auth token revocation is implemented, but Redis remains optional for
+  service readiness and checks fail open if Redis is unavailable.
 - Redis is not a system of record.
 - CloudNativePG WAL archival/PITR is not configured yet.
 - Image build/publish automation is still manual.
