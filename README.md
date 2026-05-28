@@ -14,4 +14,8 @@ The Redis deployment foundation is in:
 
 - [deploy/redis](deploy/redis)
 
-Start there for the current K8s rollout baseline.
+The full deployment and smoke-test runbook is in:
+
+- [deploy/DEPLOYMENT_RUNBOOK.md](deploy/DEPLOYMENT_RUNBOOK.md)
+
+Start with the runbook for the current K8s rollout baseline.
